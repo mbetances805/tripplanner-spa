@@ -548,29 +548,45 @@ const map = new mapboxgl.Map({
 
 const marker = buildMarker("activities", [-74.009, 40.705]);
 marker.addTo(map);
-let attractions = {hotels: [], restaurants: [], activities: []}
+let attractions = {}
 
 fetch('/api/')
 .then(result => result.json())
 .then(data => {
-  var parentHotel = document.getElementById('hotels-choices')
-  for(var i = 0; i < data.hotels.length; i++){
-    var childHotel = document.createElement('option')
-    childHotel.text = data.hotels[i].name
-    parentHotel.appendChild(childHotel)
-  }
-  var parentRestaurant = document.getElementById("restaurants-choices");
-  for (var i = 0; i < data.restaurants.length; i++){
-    var childRestaurant = document.createElement('option')
-    parentRestaurant.append(childRestaurant)
-    childRestaurant.text = data.restaurants[i].name;
-  }
-  var parentActivity = document.getElementById("activities-choices");
-  for (var i = 0; i < data.activities.length; i++) {
-    var childActivity = document.createElement('option');
-    parentActivity.append(childActivity);
-    childActivity.text = data.activities[i].name;
-  }
+  var selection = ['hotels', 'restaurants', 'activities']
+
+  selection.forEach((element) => {
+    var parentElement = document.getElementById(element+"-choices")
+    data[element].forEach((child) => {
+      var childElement = document.createElement('option')
+      childElement.text = child.name
+      parentElement.appendChild(childElement)
+      childElement.setAttributes = child.id
+    })
+  })
+
+  // var parentHotel = document.getElementById('hotels-choices')
+  // for(var i = 0; i < data.hotels.length; i++){
+  //   var childHotel = document.createElement('option')
+  //   childHotel.text = data.hotels[i].name
+  //   parentHotel.appendChild(childHotel)
+  //   childHotel.setAttribute = data.hotels[i].id
+  // }
+  // var parentRestaurant = document.getElementById("restaurants-choices");
+  // for (var i = 0; i < data.restaurants.length; i++){
+  //   var childRestaurant = document.createElement('option')
+  //   parentRestaurant.append(childRestaurant)
+  //   childRestaurant.text = data.restaurants[i].name;
+  //   childRestaurant.setAttribute = data.restaurants[i].id
+  // }
+  //
+  // var parentActivity = document.getElementById("activities-choices");
+  // for (var i = 0; i < data.activities.length; i++) {
+  //   var childActivity = document.createElement('option');
+  //   parentActivity.append(childActivity);
+  //   childActivity.text = data.activities[i].name;
+  //   childActivity.setAttribute = data.activities[i].id
+  // }
 
   attractions.hotels = data.hotels
   attractions.restaurants = data.restaurants
@@ -589,8 +605,12 @@ hotelElement.addEventListener("click", function(){
   selectedHotel.innerHTML = hotelSelect
   hotelPanel.append(selectedHotel)
 
-  var test = attractions.hotels.indexOf(hotelSelect)
-  console.log(test)
+  for(var i = 0; i < attractions.hotels.length; i++){
+    var test = attractions.hotels[i].name.indexOf(hotelSelect)
+    console.log(test)
+  }
+
+  // console.log(attractions.hotels[0].name)
   // attractions.hotels.find(function(hotelSelect){
     //
     // console.log(attractions.hotels.name)
