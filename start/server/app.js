@@ -6,12 +6,19 @@ const bodyParser = require('body-parser')
 const db = require('../models').db
 const path = require('path')
 const bluebird = require('bluebird')
-
+const api = require('../api')
 
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '..', '../public')))
+app.use(express.static(path.join(__dirname, '..', '/public')))
 app.use(volleyball)
 
+app.use('/', api)
+// app.use(app.router)
+// api.initialize(app)
+
+app.get('/', function(req, res, next){
+  res.sendFile(path.resolve(__dirname, '../public/index.html'))
+})
 
 // catch 404 (i.e., no route was hit) and forward to error handler
 app.use(function(req, res, next) {
@@ -40,3 +47,5 @@ app.listen(port, function() {
       console.error("Trouble right here in River City", err, err.stack);
     });
 });
+
+// module.exports = app;

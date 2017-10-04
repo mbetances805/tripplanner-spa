@@ -5,35 +5,28 @@ const Restaurant = require("../models").Restaurant;
 const Activity = require("../models").Activity;
 const Place = require("../models").Place;
 
-var allAttractions = {};
+const allAttractions = {};
 
-const hotels = Hotel.findAll()
-.then(function(hotels) {
-  return hotels;
-}
-const restaurants = Restaurant.findAll()
+const hotels = Hotel.findAll({include:[{ all: true }]})
+.then(function(hotelList) {
+  allAttractions.hotels = hotelList
+});
+const restaurants = Restaurant.findAll({include:[{ all: true }]})
 .then(function(restaurants) {
-  return restaurants;
-}
-const activities = Activity.findAll()
+  allAttractions.restaurants = restaurants;
+});
+const activities = Activity.findAll({include:[{ all: true }]})
 .then(function(activities) {
-  return activities;
-}
+  allAttractions.activities = activities;
+});
 Promise.all([hotels,restaurants,activities])
+.then(function(allAttraction){
+  return allAttractions
+})
 
-//   allAttractions.hotels = hotels;
-//   return Restaurant.findAll();
-// })
-// .then(function(restaurants) {
-//   allAttractions.restaurants = restaurants;
-//   return Activity.findAll();
-// })
-// .then(function(activities) {
-//   allAttractions.activities = activities;
-// })
-// .then(function() {
-//   res.json(allAttractions);
-// })
-// .catch(next);
+router.get('/api', function(req, res, next){
+  console.log("HI")
+  res.send(allAttractions)
+});
 
-router.use('/activity', activity);
+module.exports = router;
